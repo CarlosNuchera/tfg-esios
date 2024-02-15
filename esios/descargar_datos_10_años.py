@@ -1,4 +1,6 @@
-'''import requests
+import requests
+import os
+import json
 
 # URL base de la API
 base_url = "https://api.esios.ree.es/archives"
@@ -6,8 +8,9 @@ base_url = "https://api.esios.ree.es/archives"
 # Clave de API
 api_key = "6b0463ce7476aa84e1c86a550d56572733ab7fbd421c3c700d270a3269cc2c6b"
 
-# Lista para almacenar los datos de los archivos
-all_archives = []
+# Crear la carpeta media si no existe
+if not os.path.exists('media'):
+    os.makedirs('media')
 
 # Iterar sobre los últimos diez años
 for year in range(2014, 2025):
@@ -28,14 +31,11 @@ for year in range(2014, 2025):
 
     # Verificar si la solicitud fue exitosa (código de estado 200)
     if response.status_code == 200:
-        # Convertir la respuesta a formato JSON y agregarla a la lista
+        # Convertir la respuesta a formato JSON
         data = response.json()
-        all_archives.extend(data.get("archives", []))
+
+        # Guardar los datos en un archivo en la carpeta media
+        with open(f'media/data_{year}.json', 'w') as f:
+            json.dump(data.get("archives", []), f)
     else:
         print(f"Error al obtener los datos para el año {year}")
-
-# Procesar los datos de los archivos obtenidos según sea necesario
-for archive in all_archives:
-    # Procesar cada archivo aquí
-    print(archive)  # Por ejemplo, imprimir los detalles del archivo
-'''
